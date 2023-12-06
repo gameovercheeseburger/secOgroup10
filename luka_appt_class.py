@@ -62,7 +62,18 @@ class Appointment:
 
     def __str__(self):
         return f"{self.client_name}\t{self.client_phone} {self.day_of_week} {self.start_time_hour}:00 - {self.get_end_time_hour()}:00 {self.get_appt_type_desc()}"
-        
+
+
+def create_weekly_calendar():
+    calendar = []
+    days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    for day in days_of_week:
+        for hour in range(9, 17):
+            calendar.append(Appointment(day, hour))
+    return calendar
+
+
+      
     
 
 
