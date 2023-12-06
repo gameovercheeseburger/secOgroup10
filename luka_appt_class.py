@@ -32,8 +32,19 @@ class Appointment:
         self.start_time_hour = start_time_hour
 
     
-    def get_appt_type_description():
-        
+    def get_appt_type_description(self):
+        if self.appt_type == 0:
+            return "Available"
+        elif self.appt_type == 1:
+            return "Mens Cut"
+        elif self.appt_type == 2:
+            return "Ladies Cut"
+        elif self.appt_type == 3:
+            return "Mens Colouring"
+        elif self.appt_type == 4:
+            return "Ladies Colouring"
+        else:
+            return "Invalid appt_type"
 
 
 
