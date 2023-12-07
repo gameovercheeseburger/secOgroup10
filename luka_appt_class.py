@@ -61,7 +61,7 @@ class Appointment:
         return f"{self.client_name},{self.client_phone},{self.appt_type},{self.day_of_week},{self.start_time_hour}"
 
     def __str__(self):
-        return f"{self.client_name}\t{self.client_phone} {self.day_of_week} {self.start_time_hour}:00 - {self.get_end_time_hour()}:00 {self.get_appt_type_desc()}"
+        return f"{self.client_name:<15} {self.client_phone:>16} {self.day_of_week:>10} {'{:02d}'.format(self.start_time_hour):>3}:00 {'-':>2} {self.get_end_time_hour():>3}:00 {'':>3} {self.get_appt_type_description()}"
 
 
 def create_weekly_calendar():
