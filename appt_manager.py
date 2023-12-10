@@ -8,6 +8,46 @@ def create_weekly_calendar():
             calendar.append(Appointment(day, hour, "", "", 0))
     return calendar
 
+def print_menu():
+    print("\nMenu:")
+    print("=" * 35)
+    print("1. Schedule an appointment")
+    print("2. Find appointment by name")
+    print("3. Print calendar for a specific day")
+    print("4. Cancel an appointment")
+    print("9. Exit the system")
+
+def find_appointment_by_time(calendar, scheduled_appointments, days_mapping, day_index, start_hour):
+    days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    search_day = days_of_week[day_index - 1].lower()
+    appointments_at_time = [
+        appointment for appointment in scheduled_appointments
+        if appointment.day_of_week.lower() == search_day
+        and appointment.start_time_hour == start_hour
+    ]
+
+    if appointments_at_time:
+        print(f"Appointments at {start_hour}:00 on {search_day.capitalize()}:")
+        for i, appointment in enumerate(appointments_at_time, start=1):
+            print(f"{i}. {appointment}")
+
+        choice = input("Enter the number of the appointment to cancel (0 to cancel nothing): ")
+
+        if choice.isdigit():
+            index_to_cancel = int(choice) - 1
+            if 0 <= index_to_cancel < len(appointments_at_time):
+                appointment_to_cancel = appointments_at_time[index_to_cancel]
+                appointment_to_cancel.cancel(calendar, days_mapping, scheduled_appointments)
+            elif index_to_cancel == -1:
+                print("No appointment canceled.")
+            else:
+                print("Invalid selection. No appointment canceled.")
+        else:
+            print("Invalid input. No appointment canceled.")
+    else:
+        print("No appointment found for the specified time.")
+
+
 def load_scheduled_appointments(calendar, scheduled_appointments):
     print("Starting the Appointment Manager System")
     print("Weekly calendar created")
@@ -44,38 +84,6 @@ def load_scheduled_appointments(calendar, scheduled_appointments):
         else:
             print("Invalid input. Please enter 'y' or 'n'.")
 
-def print_menu():
-    print("\nMenu:")
-    print("=" * 35)
-    print("1. Schedule an appointment")
-    print("2. Find appointment by name")
-    print("3. Print calendar for a specific day")
-    print("4. Cancel an appointment")
-    print("9. Exit the system")
-
-def find_appointment_by_time(scheduled_appointments, day_index, start_hour):
-    search_day = days_of_week[day_index - 1].lower()
-    for appointment in scheduled_appointments:
-        if (
-            appointment.day_of_week.lower() == search_day
-            and appointment.start_time_hour == start_hour
-        ):
-            print(appointment)
-            return
-    print("No appointment found for the specified time.")
-
-def show_appointments_by_name(scheduled_appointments):
-    name = input("Enter the client name: ")
-    found_appointments = [appointment for appointment in scheduled_appointments if
-                          appointment.client_name.lower() == name.lower()]
-    if found_appointments:
-        print(f"\n{'Client Name':<20} {'Phone':<15} {'Day':<15} {'Start - End':<20} {'Type'}")
-        print("=" * 85)
-        for appointment in found_appointments:
-            print(appointment)
-    else:
-        print("No appointments found for the specified client name.")
-
 def show_appointments_by_day(scheduled_appointments, days_of_week):
     #w3school for capitalize
     if any(not appointment.day_of_week for appointment in scheduled_appointments):
@@ -102,6 +110,18 @@ def show_appointments_by_day(scheduled_appointments, days_of_week):
             print(f"{'':<20} {'':<15} {day:<15} {hour:02}:00 - {hour + 1:02}:00 {'Available'}")
 
     print("=" * 85)
+    
+def show_appointments_by_name(scheduled_appointments):
+    name = input("Enter the client name: ")
+    found_appointments = [appointment for appointment in scheduled_appointments if
+                          appointment.client_name.lower() == name.lower()]
+    if found_appointments:
+        print(f"\n{'Client Name':<20} {'Phone':<15} {'Day':<15} {'Start - End':<20} {'Type'}")
+        print("=" * 85)
+        for appointment in found_appointments:
+            print(appointment)
+    else:
+        print("No appointments found for the specified client name.")
 
 def save_scheduled_appointments(scheduled_appointments, file_path):
     with open(file_path, 'w') as file:
@@ -132,8 +152,8 @@ def main():
             print("1: Mens cut $50, 2: Ladies Cut $80, 3: Men coloring $50, 4: Ladies coloring $120")
             appt_type = int(input("Enter the type of appointment (1-4): "))
             if appt_type == 0 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9].Appointment(client_name)
-                print(f"Slot not available. Existing appointment: {existing_appointment}")
+                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
+                print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
    
             elif appt_type == 1 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
                 existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
@@ -161,15 +181,16 @@ def main():
 
         elif choice == "3":
             # Print calendar for a specific day
+            day = input("What Days of the week do you like to check?: ")
             show_appointments_by_day(scheduled_appointments, day)
 
+        # Inside main function
         elif choice == "4":
             # Cancel an appointment
-            find_appointment_by_time(scheduled_appointments, day, hour)
-            cancel_choice = input("Do you want to cancel this appointment? (yes/no): ")
-            if cancel_choice.lower() == "yes":
-                calendar[(days_mapping[day] - 1) * 7 + hour - 9].cancel()
-                print("Appointment canceled successfully.")
+            day = input("Enter the day of the week to cancel the appointment: ").capitalize()
+            hour = int(input("Enter the hour to cancel the appointment (24-hour clock): "))
+            find_appointment_by_time(calendar, scheduled_appointments, days_mapping, days_mapping[day.lower()], hour)
+
 
         elif choice == "9":
             # Exit the system
