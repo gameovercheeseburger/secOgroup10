@@ -1,5 +1,5 @@
 from appointment import Appointment
-
+#Everything that is included here and not taught in the lecture is from w3school and geeksforgeeks
 def create_weekly_calendar():
     calendar = []
     days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
