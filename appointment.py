@@ -51,17 +51,27 @@ class Appointment:
         self.client_name = client_name
         self.client_phone = client_phone
         self.appt_type = appt_type
-
-    def cancel(self):
-        self.client_name = ""
-        self.client_phone = ""
-        self.appt_type = 0
+    
+    def cancel(self, calendar, days_mapping, scheduled_appointments):
+        day_index = days_mapping.get(self.day_of_week.lower())
+        if day_index is not None:
+            # Mark the slot as available
+            calendar_index = (day_index - 1) * 6 + self.start_time_hour - 9
+            calendar[calendar_index].client_name = ""
+            # Remove the appointment from the scheduled list
+            scheduled_appointments.remove(self)
+            print(f"Appointment canceled successfully.")
+        else:
+            print("Invalid day. Appointment not canceled.")
 
     def format_record(self):
         return f"{self.client_name},{self.client_phone},{self.appt_type},{self.day_of_week},{self.start_time_hour}"
 
-def __str__(self):
-        return f"{self.client_name:<20} {self.client_phone:<15} {self.day_of_week:<15} {'{:02d}'.format(self.start_time_hour):>3}:00 {'-':>2} {self.get_end_time_hour():>3}:00 {'':>3} {self.get_appt_type_description():<20}"
+    def __str__(self):
+        return f"{self.client_name:<20} {self.client_phone:<15} {self.day_of_week:<15} {'{:02d}'.format(self.start_time_hour):>0.5}:00 {'-':>1} {self.get_end_time_hour():>3}:00 {'':>3} {self.get_appt_type_description():<20}"
+
+
+
 
 
       
