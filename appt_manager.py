@@ -165,7 +165,7 @@ def main():
 
         elif choice == "4":
             # Cancel an appointment
-            find_appointment_by_time(scheduled_appointments)
+            find_appointment_by_time(scheduled_appointments, day, hour)
             cancel_choice = input("Do you want to cancel this appointment? (yes/no): ")
             if cancel_choice.lower() == "yes":
                 calendar[(days_mapping[day] - 1) * 6 + hour - 9].cancel()
