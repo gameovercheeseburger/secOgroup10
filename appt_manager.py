@@ -162,36 +162,36 @@ def main():
         if choice == "1":
             # Schedule an appointment
             day = input("What Day: ").lower()
-            hour = int(input("Enter Start hour (24-hour clock): "))
-            client_name = input("Client Name: ")
-            client_phone = input("Client Phone:")
-            print("Appointment types")
-            print("1: Mens cut $50, 2: Ladies Cut $80, 3: Men coloring $50, 4: Ladies coloring $120")
-            appt_type = int(input("Enter the type of appointment (1-4): "))
-            if appt_type == 0 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
-                print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
-   
-            elif appt_type == 1 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
-                print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
-                print(f"\n{show_appointments_by_day(scheduled_appointments, day)}")
-            elif appt_type == 2 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
-                print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
-                print(f"\n{show_appointments_by_day(scheduled_appointments, day)}")
-            elif appt_type == 3 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
-                print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
-                print(f"\n{show_appointments_by_day(scheduled_appointments, day)}")
-            elif appt_type == 4 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
-                print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
-                print(f"\n{show_appointments_by_day(scheduled_appointments, day)}")
+
+            # Check if the entered day is valid
+            valid_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+            if day not in valid_days:
+                print("Invalid day entered. Please enter a valid day of the week (Monday to Saturday).")
             else:
-                calendar[(days_mapping[day] - 1) * 7 + hour - 9].schedule(client_name, client_phone, appt_type)
-                scheduled_appointments.append(Appointment(day, hour, client_name, client_phone, appt_type))
-                print(f"Ok, {client_name} appointment has been scheduled")
+                hour = int(input("Enter Start hour (24-hour clock): "))
+                if hour < 9 or hour > 16:
+                    print("Invalid time. The office Starts at 09:00 and closes at 17:00. The last appointment for the day is 16:00")
+                else:
+                    existing_appointments = [
+                        appointment for appointment in scheduled_appointments
+                        if appointment.day_of_week.lower() == day
+                        and appointment.start_time_hour == hour
+                    ]
+                    if existing_appointments:
+                        print("Slot not available. Existing appointments:")
+                        for appointment in existing_appointments:
+                            print(appointment)
+
+                    else:
+                    # Proceed with scheduling the appointment
+                        client_name = input("Client Name: ")
+                        client_phone = input("Client Phone:")
+                        print("Appointment types")
+                        print("1: Mens cut $50, 2: Ladies Cut $80, 3: Men coloring $50, 4: Ladies coloring $120")
+                        appt_type = int(input("Enter the type of appointment (1-4): "))
+                        calendar[(days_mapping[day] - 1) * 7 + hour - 9].schedule(client_name, client_phone, appt_type)
+                        scheduled_appointments.append(Appointment(day, hour, client_name, client_phone, appt_type))
+                        print(f"Ok, {client_name} appointment has been scheduled")
 
         elif choice == "2":
             # Find appointment by name
@@ -217,6 +217,10 @@ def main():
                 file_name = input("Enter the file name to save appointments to: ")
                 file_path = r"C:\OOP\New folder" + "\\" + file_name + ".csv"
                 save_scheduled_appointments(scheduled_appointments, file_path)
+                print("Good Bye!")
+                break
+            else:
+                print("This Appointment is not saved!")
                 print("Good Bye!")
                 break
 
