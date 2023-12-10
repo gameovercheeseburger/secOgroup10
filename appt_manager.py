@@ -131,28 +131,28 @@ def main():
             print("Appointment types")
             print("1: Mens cut $50, 2: Ladies Cut $80, 3: Men coloring $50, 4: Ladies coloring $120")
             appt_type = int(input("Enter the type of appointment (1-4): "))
-            if appt_type == 0 and calendar[(days_mapping[day] - 1) * 6 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 6 + hour - 9].Appointment(client_name)
+            if appt_type == 0 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
+                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9].Appointment(client_name)
                 print(f"Slot not available. Existing appointment: {existing_appointment}")
    
-            elif appt_type == 1 and calendar[(days_mapping[day] - 1) * 6 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 6 + hour - 9]
+            elif appt_type == 1 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
+                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
                 print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
                 print(f"\n{show_appointments_by_day(scheduled_appointments, day)}")
-            elif appt_type == 2 and calendar[(days_mapping[day] - 1) * 6 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 6 + hour - 9]
+            elif appt_type == 2 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
+                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
                 print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
                 print(f"\n{show_appointments_by_day(scheduled_appointments, day)}")
-            elif appt_type == 3 and calendar[(days_mapping[day] - 1) * 6 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 6 + hour - 9]
+            elif appt_type == 3 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
+                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
                 print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
                 print(f"\n{show_appointments_by_day(scheduled_appointments, day)}")
-            elif appt_type == 4 and calendar[(days_mapping[day] - 1) * 6 + hour - 9].client_name:
-                existing_appointment = calendar[(days_mapping[day] - 1) * 6 + hour - 9]
+            elif appt_type == 4 and calendar[(days_mapping[day] - 1) * 7 + hour - 9].client_name:
+                existing_appointment = calendar[(days_mapping[day] - 1) * 7 + hour - 9]
                 print(f"Slot not available. Existing appointment: {existing_appointment.get_client_name()}")
                 print(f"\n{show_appointments_by_day(scheduled_appointments, day)}")
             else:
-                calendar[(days_mapping[day] - 1) * 6 + hour - 9].schedule(client_name, client_phone, appt_type)
+                calendar[(days_mapping[day] - 1) * 7 + hour - 9].schedule(client_name, client_phone, appt_type)
                 scheduled_appointments.append(Appointment(day, hour, client_name, client_phone, appt_type))
 
         elif choice == "2":
@@ -168,7 +168,7 @@ def main():
             find_appointment_by_time(scheduled_appointments, day, hour)
             cancel_choice = input("Do you want to cancel this appointment? (yes/no): ")
             if cancel_choice.lower() == "yes":
-                calendar[(days_mapping[day] - 1) * 6 + hour - 9].cancel()
+                calendar[(days_mapping[day] - 1) * 7 + hour - 9].cancel()
                 print("Appointment canceled successfully.")
 
         elif choice == "9":
