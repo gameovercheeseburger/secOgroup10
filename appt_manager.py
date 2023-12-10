@@ -31,17 +31,15 @@ def find_appointment_by_time(calendar, scheduled_appointments, days_mapping, day
         for i, appointment in enumerate(appointments_at_time, start=1):
             print(f"{i}. {appointment}")
 
-        choice = input("Enter the number of the appointment to cancel (0 to cancel nothing): ")
+        choice = input("Enter 'yes' to cancel an appointment (or 'no' to cancel nothing): ").lower()
 
-        if choice.isdigit():
-            index_to_cancel = int(choice) - 1
-            if 0 <= index_to_cancel < len(appointments_at_time):
-                appointment_to_cancel = appointments_at_time[index_to_cancel]
-                appointment_to_cancel.cancel(calendar, days_mapping, scheduled_appointments)
-            elif index_to_cancel == -1:
-                print("No appointment canceled.")
-            else:
-                print("Invalid selection. No appointment canceled.")
+        if choice == 'yes':
+            # Cancel the first appointment found at this time
+            appointment_to_cancel = appointments_at_time[0]
+            appointment_to_cancel.cancel(calendar, days_mapping, scheduled_appointments)
+            print("Appointment canceled successfully.")
+        elif choice == 'no':
+            print("No appointment canceled.")
         else:
             print("Invalid input. No appointment canceled.")
     else:
@@ -85,45 +83,64 @@ def load_scheduled_appointments(calendar, scheduled_appointments):
             print("Invalid input. Please enter 'y' or 'n'.")
 
 def show_appointments_by_day(scheduled_appointments, days_of_week):
-    #w3school for capitalize
+    # w3school for capitalize
+    valid_days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    
     if any(not appointment.day_of_week for appointment in scheduled_appointments):
         day = input("Enter the day of the week (e.g., Monday): ").capitalize()
     else:
         day = days_of_week
-    
-    # Print header
-    print(f"\n{'Client Name':<20} {'Phone':<15} {'Day':<15} {'Start - End':<20} {'Type'}")
-    print("=" * 85)
 
-    for hour in range(9, 17):
-        appointment_found = False
-        for appointment in scheduled_appointments:
-            if (
-                appointment.day_of_week.lower() == day.lower()
-                and appointment.start_time_hour == hour
-            ):
-                print(appointment)
-                appointment_found = True
-                break
+    if day.capitalize() in valid_days:
+        # Print header
+        print(f"\n{'Client Name':<20} {'Phone':<15} {'Day':<15} {'Start - End':<20} {'Type'}")
+        print("=" * 85)
 
-        if not appointment_found:
-            print(f"{'':<20} {'':<15} {day:<15} {hour:02}:00 - {hour + 1:02}:00 {'Available'}")
+        for hour in range(9, 17):
+            appointment_found = False
+            for appointment in scheduled_appointments:
+                if (
+                    appointment.day_of_week.lower() == day.lower()
+                    and appointment.start_time_hour == hour
+                ):
+                    print(appointment)
+                    appointment_found = True
+                    break
 
-    print("=" * 85)
-    
+            if not appointment_found:
+                print(f"{'':<20} {'':<15} {day:<15} {hour:02}:00 - {hour + 1:02}:00 {'Available'}")
+
+        print("=" * 85)
+    else:
+        print("Invalid day entered. Please enter a valid day of the week.")
+
 def show_appointments_by_name(scheduled_appointments):
-    name = input("Enter the client name: ")
+    name = input("Enter the client name: ").lower()
     found_appointments = [appointment for appointment in scheduled_appointments if
-                          appointment.client_name.lower() == name.lower()]
+                          name in appointment.client_name.lower()]
+    
     if found_appointments:
         print(f"\n{'Client Name':<20} {'Phone':<15} {'Day':<15} {'Start - End':<20} {'Type'}")
         print("=" * 85)
         for appointment in found_appointments:
             print(appointment)
     else:
-        print("No appointments found for the specified client name.")
+        print(f"No appointments found for names containing '{name}'.")
+
+# Rest of the code remains the same
+
 
 def save_scheduled_appointments(scheduled_appointments, file_path):
+    #this is from w3 school. so that the application would not error out. since I am not allowed to use import os
+    try:
+        with open(file_path, 'r'):
+            overwrite = input("The file already exists. Do you want to overwrite it? (Y/N): ").lower()
+            if overwrite != 'y':
+                file_name = input("Enter a different file name: ")
+                file_path = r"C:\OOP\New folder" + "\\" + file_name + ".csv"
+    except FileNotFoundError:
+        pass  # The file doesn't exist, continue with saving
+
     with open(file_path, 'w') as file:
         for appointment in scheduled_appointments:
             file.write(appointment.format_record() + '\n')
@@ -174,6 +191,7 @@ def main():
             else:
                 calendar[(days_mapping[day] - 1) * 7 + hour - 9].schedule(client_name, client_phone, appt_type)
                 scheduled_appointments.append(Appointment(day, hour, client_name, client_phone, appt_type))
+                print(f"Ok, {client_name} appointment has been scheduled")
 
         elif choice == "2":
             # Find appointment by name
