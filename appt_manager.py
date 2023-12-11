@@ -154,17 +154,16 @@ def main():
     scheduled_appointments = []
     days_mapping = {day.lower(): index + 1 for index, day in enumerate(days)}
     load_scheduled_appointments(calendar, scheduled_appointments)
-
+    valid_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    
     while True:
         print_menu()
         choice = input("Enter your choice (1-4 and 9): ")
-
+        
         if choice == "1":
             # Schedule an appointment
             day = input("What Day: ").lower()
-
             # Check if the entered day is valid
-            valid_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
             if day not in valid_days:
                 print("Invalid day entered. Please enter a valid day of the week (Monday to Saturday).")
             else:
@@ -189,9 +188,12 @@ def main():
                         print("Appointment types")
                         print("1: Mens cut $50, 2: Ladies Cut $80, 3: Men coloring $50, 4: Ladies coloring $120")
                         appt_type = int(input("Enter the type of appointment (1-4): "))
-                        calendar[(days_mapping[day] - 1) * 7 + hour - 9].schedule(client_name, client_phone, appt_type)
-                        scheduled_appointments.append(Appointment(day, hour, client_name, client_phone, appt_type))
-                        print(f"Ok, {client_name} appointment has been scheduled")
+                        if 0 < appt_type < 5:
+                            calendar[(days_mapping[day] - 1) * 7 + hour - 9].schedule(client_name, client_phone, appt_type)
+                            scheduled_appointments.append(Appointment(day, hour, client_name, client_phone, appt_type))
+                            print(f"Ok, {client_name} appointment has been scheduled")
+                        else:
+                            print("Sorry that is not a valid appointment type!")
 
         elif choice == "2":
             # Find appointment by name
@@ -199,15 +201,24 @@ def main():
 
         elif choice == "3":
             # Print calendar for a specific day
-            day = input("What Days of the week do you like to check?: ")
-            show_appointments_by_day(scheduled_appointments, day)
+            day = input("What Days of the week do you like to check?: ").lower()
+            if day not in valid_days:
+                print("Invalid day entered. Please enter a valid day of the week (Monday to Saturday).")
+            else:
+                show_appointments_by_day(scheduled_appointments, day)
 
         # Inside main function
         elif choice == "4":
             # Cancel an appointment
-            day = input("Enter the day of the week to cancel the appointment: ").capitalize()
-            hour = int(input("Enter the hour to cancel the appointment (24-hour clock): "))
-            find_appointment_by_time(calendar, scheduled_appointments, days_mapping, days_mapping[day.lower()], hour)
+            day = input("Enter the day of the week to cancel the appointment: ").lower()
+            if day not in valid_days:
+                print("Invalid day entered. Please enter a valid day of the week (Monday to Saturday).")
+            else:
+                hour = int(input("Enter Start hour (24-hour clock): "))
+                if hour < 9 or hour > 16:
+                    print("Invalid time. The office Starts at 09:00 and closes at 17:00. The last appointment for the day is 16:00")
+                else:
+                    find_appointment_by_time(calendar, scheduled_appointments, days_mapping, days_mapping[day.lower()], hour)
 
 
         elif choice == "9":
